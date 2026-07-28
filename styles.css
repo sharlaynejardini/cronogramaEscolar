@@ -429,6 +429,7 @@ h1 {
 }
 
 .day-event:hover,
+.day-event:focus-visible,
 .upcoming-item:hover {
   box-shadow: var(--soft-shadow);
   transform: translateY(-2px);
@@ -441,12 +442,29 @@ h1 {
   line-height: 1.25;
 }
 
-.day-event small,
 .upcoming-item small {
   display: block;
   margin-top: 3px;
   color: var(--muted);
   line-height: 1.25;
+}
+
+.day-event small {
+  display: block;
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  color: var(--muted);
+  line-height: 1.25;
+  opacity: 0;
+  transition: max-height 180ms ease, margin-top 180ms ease, opacity 160ms ease;
+}
+
+.day-event:hover small,
+.day-event:focus-visible small {
+  max-height: 80px;
+  margin-top: 3px;
+  opacity: 1;
 }
 
 .day-event.feriados,
