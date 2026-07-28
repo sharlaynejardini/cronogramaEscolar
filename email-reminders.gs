@@ -92,7 +92,7 @@ function montarCorpoEmail(eventos, dataFormatada) {
     <p>Bom dia, professores.</p>
     <p>Segue lembrete dos eventos previstos para amanhã (${dataFormatada}):</p>
     <ul>${itens}</ul>
-    <p>Mensagem enviada automaticamente pelo calendário escolar.</p>
+    <p>Calendário Escolar</p>
   `;
 }
 

@@ -1,6 +1,6 @@
 # Lembretes por e-mail
 
-Para enviar e-mail automaticamente 1 dia antes dos eventos, use o arquivo `email-reminders.gs` no Google Apps Script da planilha.
+Para enviar e-mail 1 dia antes dos eventos, use o arquivo `email-reminders.gs` no Google Apps Script da planilha.
 
 1. Abra a planilha.
 2. Vá em `Extensões` > `Apps Script`.

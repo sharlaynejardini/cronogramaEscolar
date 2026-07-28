@@ -421,7 +421,7 @@ async function syncEvents() {
   try {
     const { rows, source } = await loadSheet();
     state.events = rowsToEvents(rows);
-    elements.syncStatus.textContent = `Atualizado via ${source} às ${formatDate(new Date(), { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+    elements.syncStatus.textContent = `Atualizado às ${formatDate(new Date(), { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
   } catch (error) {
     if (!state.events.length) state.events = rowsToEvents(fallbackRows);
     elements.syncStatus.textContent = "Usando dados salvos; verifique o acesso da planilha";
