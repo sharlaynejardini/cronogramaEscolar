@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Calendário de Eventos - 2º Semestre</title>
+    <meta http-equiv="Cache-Control" content="no-store">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="styles.css?v=20260727-2">
+  </head>
+  <body>
+    <header class="site-hero">
+      <div class="hero-inner">
+        <p class="eyebrow">Cronograma 2026</p>
+        <h1>Calendário de Eventos</h1>
+        <p class="hero-copy">2º Semestre com atualização automática pela planilha e lembretes para professores um dia antes dos eventos.</p>
+        <div class="hero-actions">
+          <div class="status" id="syncStatus">Carregando planilha...</div>
+          <button class="sync-button" id="refreshButton" type="button">Atualizar</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="site-layout">
+      <section class="summary-grid" aria-label="Resumo do cronograma">
+        <article class="summary-card">
+          <span>Total de eventos</span>
+          <strong id="totalEvents">-</strong>
+        </article>
+        <article class="summary-card">
+          <span>Eventos no mês</span>
+          <strong id="monthEvents">-</strong>
+        </article>
+        <article class="summary-card">
+          <span>Próximo evento</span>
+          <strong id="nextEventDate">-</strong>
+        </article>
+      </section>
+
+      <section class="toolbar" aria-label="Controles do calendário">
+        <div class="month-switcher">
+          <button class="icon-button" id="prevMonth" aria-label="Mês anterior" title="Mês anterior">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div>
+            <p class="label">Mês</p>
+            <strong id="monthLabel">-</strong>
+          </div>
+          <button class="icon-button" id="nextMonth" aria-label="Próximo mês" title="Próximo mês">
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <label class="search">
+          <span>Buscar</span>
+          <input id="searchInput" type="search" placeholder="Evento, data ou observação">
+        </label>
+
+        <div class="filters" aria-label="Categorias">
+          <button class="filter active" data-filter="todos">Todos</button>
+          <button class="filter" data-filter="provas">Provas</button>
+          <button class="filter" data-filter="feriados">Feriados</button>
+          <button class="filter" data-filter="reunioes">Reuniões</button>
+          <button class="filter" data-filter="projetos">Projetos</button>
+        </div>
+      </section>
+
+      <section class="calendar-shell" aria-label="Calendário mensal">
+        <div class="weekdays" aria-hidden="true">
+          <span>Dom</span>
+          <span>Seg</span>
+          <span>Ter</span>
+          <span>Qua</span>
+          <span>Qui</span>
+          <span>Sex</span>
+          <span>Sáb</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </section>
+
+      <section class="next-events" aria-labelledby="nextTitle">
+        <h2 id="nextTitle">Próximos eventos</h2>
+        <div id="upcomingList"></div>
+      </section>
+    </main>
+
+    <dialog id="eventDialog">
+      <form method="dialog">
+        <button class="close-button" aria-label="Fechar" title="Fechar">×</button>
+        <p class="eyebrow" id="dialogDate"></p>
+        <h2 id="dialogTitle"></h2>
+        <p id="dialogObs"></p>
+      </form>
+    </dialog>
+
+    <script src="app.js?v=20260727-2"></script>
+  </body>
+</html>
