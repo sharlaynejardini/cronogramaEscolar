@@ -747,3 +747,120 @@ dialog form {
     padding: 16px;
   }
 }
+
+:root {
+  --ink: #344256;
+  --muted: #78869a;
+  --brand: #2f9aa8;
+  --brand-dark: #28616b;
+  --shadow: 0 16px 36px rgba(52, 66, 86, 0.1);
+  --soft-shadow: 0 8px 20px rgba(52, 66, 86, 0.08);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  font-weight: 400;
+}
+
+h1 {
+  font-weight: 600;
+}
+
+.eyebrow,
+.label,
+.sync-button,
+.summary-card span,
+.summary-card strong,
+.month-switcher strong,
+.filter,
+.weekdays span,
+.day-number,
+.event-count,
+.more,
+.date-chip {
+  font-weight: 500;
+}
+
+.summary-card strong {
+  color: #315d68;
+}
+
+.toolbar,
+.calendar-shell,
+.next-events,
+.summary-card {
+  border-width: 1px;
+}
+
+.day {
+  min-height: 146px;
+  background: #fffdfa;
+}
+
+.day:nth-child(7n + 1),
+.day:nth-child(7n) {
+  background: #fffdfa;
+}
+
+.day.today {
+  box-shadow: inset 0 0 0 2px #8ccf81;
+}
+
+.day-event,
+.upcoming-item {
+  border-left-width: 3px;
+}
+
+.day-event {
+  padding: 8px 10px;
+  color: #344256;
+}
+
+.day-event p,
+.upcoming-item p {
+  font-weight: 400;
+}
+
+.day-event small,
+.upcoming-item small {
+  color: #69788d;
+  font-weight: 400;
+}
+
+.day-event.feriados,
+.upcoming-item.feriados {
+  background: #fff3f4;
+}
+
+.day-event.provas,
+.upcoming-item.provas {
+  background: #fff5ce;
+}
+
+.day-event.reunioes,
+.upcoming-item.reunioes {
+  background: #f3edff;
+}
+
+.day-event.projetos,
+.upcoming-item.projetos {
+  background: #ecf9e7;
+}
+
+.date-chip {
+  background: #d9f5f7;
+}
+
+.filter {
+  color: #617085;
+}
+
+.filter.active {
+  font-weight: 500;
+}
+
+@media (max-width: 720px) {
+  .day {
+    min-height: auto;
+  }
+}
