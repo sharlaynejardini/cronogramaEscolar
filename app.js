@@ -1,86 +1,7 @@
-const SHEET_ID = "1nxcIGQBB6mI_JXcSBeDvKdeX41vuPsaek8I-RRLtoO8";
-const SHEET_NAME = "2º SEMESTRE";
+﻿const SHEET_ID = "1nxcIGQBB6mI_JXcSBeDvKdeX41vuPsaek8I-RRLtoO8";
 const SHEET_GID = "1366818204";
 const REFRESH_MS = 15 * 1000;
 
-const fallbackRows = [
-  ["DATA", "DIA DA SEMANA", "EVENTO / ATIVIDADE", "OBS"],
-  ["27/07/2026", "2ª Feira", "Início do 3º Bimestre", ""],
-  ["27/07/2026", "2ª Feira", "Reunião Formatura.", ""],
-  ["31/07/2026", "6ª Feira", "Abordar sobre o dia 25 de Julho - mulher negra e caribenha", ""],
-  ["31/07/2026", "6ª Feira", "ECA (Lei 8.069/90)", ""],
-  ["03/08/2026", "2ª Feira", "Simulado Saresp 2º anos", ""],
-  ["03/08/2026", "2ª Feira", "5ºs anos - MANHÃ (total aproximado: 68 alunos). \"O Gato de Botas”", ""],
-  ["03/08/2026", "2ª Feira", "Projeto Ecograna - Início da Arrecadação", ""],
-  ["04/08/2026", "3ª Feira", "Simulado Saresp 2º anos", ""],
-  ["05/08/2026", "4ª Feira", "Simulado Saresp 2º anos", ""],
-  ["06/08/2026", "5ª Feira", "Simulado Saresp 2º anos", ""],
-  ["07/08/2026", "6ª Feira", "Simulado Saresp 2º anos", ""],
-  ["07/08/2026", "6ª Feira", "Projeto Pequenos Doutores (8º e 9º)", "10h15min"],
-  ["08/08/2026", "Sábado", "Detetização", ""],
-  ["11/08/2026", "3ª Feira", "1ºs, 2ºs, 3ºs e 4ºs anos - TARDE (total aproximado: 204 alunos). \"O Gato de Botas”", ""],
-  ["17/08/2026", "2ª Feira", "VIII EDIÇÃO DA SEMANA DA VALORIZAÇÃO DAS DIFERENÇAS - Tema: Capacitismo: Conscientização e direitos na Educação Especial\" Pensar e organizar:", ""],
-  ["18/08/2026", "3ª Feira", "VIII EDIÇÃO DA SEMANA DA VALORIZAÇÃO DAS DIFERENÇAS - Tema: Capacitismo: Conscientização e direitos na Educação Especial\" Pensar e organizar:", ""],
-  ["19/08/2026", "4ª Feira", "VIII EDIÇÃO DA SEMANA DA VALORIZAÇÃO DAS DIFERENÇAS - Tema: Capacitismo: Conscientização e direitos na Educação Especial\" Pensar e organizar:", ""],
-  ["20/08/2026", "5ª Feira", "VIII EDIÇÃO DA SEMANA DA VALORIZAÇÃO DAS DIFERENÇAS - Tema: Capacitismo: Conscientização e direitos na Educação Especial\" Pensar e organizar:", ""],
-  ["21/08/2026", "6ª Feira", "VIII EDIÇÃO DA SEMANA DA VALORIZAÇÃO DAS DIFERENÇAS - Tema: Capacitismo: Conscientização e direitos na Educação Especial\" Pensar e organizar:", ""],
-  ["18 a 21/08", "3ª a 6ª Feira", "Simulados SAEB (5º e 9º anos - Mat/LP e CN/CH)", "Prévia"],
-  ["17 a 21/08", "Seg a Sex", "Avaliações Mensais (3º Bim)", ""],
-  ["24 a 28/08", "Seg a Sex", "Período do Abraço", ""],
-  ["25/08/2026", "3ª Feira", "5º OBMEP Mirim - 1º Fase", ""],
-  ["28/08/2026", "6ª Feira", "Prazo final Sicoob", ""],
-  ["31/08/2026", "2ª Feira", "Prazo para formatação de provas bimestrais e início de impressões", ""],
-  ["01/09/2026", "3ª Feira", "Planejamento de ações Pensar em ações pedagógicas relacionadas ao Setembro Amarelo para ser incluso no Plano de Aula de Setembro. Considerar atividades que promovam o acolhimento, a empatia, a valorização da vida, a saúde emocional e o fortalecimento dos vínculos entre os estudantes. As propostas poderão ser desenvolvidas ao longo do mês de setembro, respeitando a faixa etária e as especificidades de cada turma.", ""],
-  ["02/09/2026", "4ª Feira", "Projeto Pequenos Doutores (8º e 9º)", "7h10min"],
-  ["03/09/2026", "5ª Feira", "5º OBMEP Mirim - 1º Fase - Prazo final para correção.", ""],
-  ["04/09/2026", "6ª Feira", "SICOOB - Prazo final para entrega na SE.", ""],
-  ["07/09/2026", "2ª Feira", "Independência do Brasil - Feriado (Evento Cívico)", "Sem Aula"],
-  ["08/09/2026", "3ª Feira", "Simulado SAEB 2º ano", "Prévia"],
-  ["09/09/2026", "4ª Feira", "Avaliação Diagnóstica Processual", ""],
-  ["10/09/2026", "5ª Feira", "Avaliação Diagnóstica Processual", ""],
-  ["14 a 18/09", "2ª a 6ª Feira", "Simulados SARESP Digital (Plataforma Jovens Notáveis - 2º, 5º e 9º anos)", "Prévia"],
-  ["14 a 18/09", "Ter a Qui", "Avaliações Bimestrais (Caderno A, B e Produção de Texto)", ""],
-  ["18/09/2026", "6ª Feira", "Parecer descritivo - Prazo final.", ""],
-  ["21/09/2026", "2ª Feira", "Dia da Árvore", ""],
-  ["22/09/2026", "3ª Feira", "Entre o Eco e o Verde: Ações para combater a crise climática", ""],
-  ["26/09/2026", "Sábado", "FIEB TECH das 9h às 15h", ""],
-  ["28/09/2026", "2ª Feira", "Conselho de Classe 5º ao 9º (3º Bim)", ""],
-  ["29/09/2026", "3ª Feira", "Conselho de Classe 1º ao 4º (3º Bim)", ""],
-  ["30/09/2026", "4ª Feira", "Término do 3º Bimestre (48 Dias)", ""],
-  ["01/10/2026", "5ª Feira", "Início do 4º Bimestre / Simulado Interno ITB-IDEB", ""],
-  ["02/10/2026", "2ª Feira", "Projeto Pequenos Doutores (8º e 9º)", "10h15min"],
-  ["05/10/2026", "2ª Feira", "Semana das Crianças PEB 1 - Abertura Lojinha", ""],
-  ["07/10/2026", "4ª Feira", "Data da Prova Objetiva: ITB", ""],
-  ["08 e 09/10", "5ª e 6ª Feira", "Simulado SAEB Impresso (2º, 5º e 9º anos)", ""],
-  ["09/10/2026", "6ª Feira", "Saída Pedagógica Hopi Hari (FUND 2)", "Saída Pedagógica - Hopi Hari em 09/10/2026, valor R$240,00 pix, dinheiro ou cartão de crédito parcelado até 02/10/2026."],
-  ["12/10/2026", "2ª Feira", "Nossa Senhora Aparecida - Feriado", "Sem Aula"],
-  ["15/10/2026", "5ª Feira", "Dia dos Professores", "Sem Aula"],
-  ["16/10/2026", "6ª Feira", "Saída Pedagógica Animalia (FUND 1)", "Saída Pedagógica - Animália Park em 16/10/2026, valor R$250,00 pix, dinheiro ou cartão de crédito parcelado até 09/10/2026."],
-  ["17/10/2026", "Sábado", "Reunião de Pais + Ecograna", ""],
-  ["17/10/2026", "Sábado", "OBMEP - 2ª Fase", ""],
-  ["19 a 23/10", "Qua a Sex", "Avaliações Mensais (4º Bim)", ""],
-  ["28/10/2026", "4ª Feira", "Dia do Funcionário Público - Ponto Facultativo", "Sem Aula"],
-  ["02/11/2026", "2ª Feira", "Finados - Feriado", "Sem Aula"],
-  ["03/11/2026", "3ª Feira", "Novembro Negro", ""],
-  ["05/11/2026", "6ª Feira", "Projeto Pequenos Doutores (8º e 9º)", ""],
-  ["10/11/2026", "3ª Feira", "OBMEP Mirim - 2ª Fase", ""],
-  ["16 e 19/11", "Seg e Ter", "Avaliações Bimestrais (Caderno A e B - 4º Bim)", ""],
-  ["19/11/2026", "6ª Feira", "Parecer descritivo - Prazo final.", ""],
-  ["17/11/2026", "3ª Feira", "SARESP 2º e 5º anos (Impressa) / 9º anos (Digital)", "Prévia"],
-  ["17/11 a 04/12", "Período", "Fluência Leitora - SEDUC/SP (Alfabetiza Juntos)", "Prévia"],
-  ["20/11/2026", "6ª Feira", "Consciência Negra - Feriado", "Sem Aula"],
-  ["21/11/2026", "Sábado", "Nossa Senhora da Escada - Ponto Facultativo", "Sem Aula"],
-  ["25/11/2026", "5ª Feira", "Projeto Pequenos Doutores (8º e 9º)", ""],
-  ["25/11/2026", "5ª Feira", "4º Avaliação Diagnóstica Processual", ""],
-  ["26/11/2026", "6ª Feira", "4º Avaliação Diagnóstica Processual", ""],
-  ["24/11/2026", "3ª Feira", "ITB", "Prévia"],
-  ["03/12/2026", "5ª Feira", "Conselho de Classe 5º ao 9º (4º Bim)", ""],
-  ["04/12/2026", "6ª Feira", "Conselho de Classe 1º ao 4º (4º Bim)", ""],
-  ["12/12/2026", "Sábado", "Reunião de Pais/Responsáveis (Encerramento)", ""],
-  ["14/12/2026", "2ª Feira", "Colação de Grau", ""],
-  ["15/12/2026", "3ª Feira", "Divulgação Premiados OBMEP", ""],
-  ["18/12/2026", "6ª Feira", "Término do 4º Bimestre (54 Dias)", ""]
-];
 
 const state = {
   events: [],
@@ -209,16 +130,6 @@ function rowsToEvents(rows) {
     .sort((a, b) => a.date - b.date || a.title.localeCompare(b.title, "pt-BR"));
 }
 
-function parseGoogleTable(jsonText) {
-  const json = JSON.parse(jsonText.substring(jsonText.indexOf("{"), jsonText.lastIndexOf("}") + 1));
-  return json.table.rows.map((row) =>
-    (row.c || []).map((cell) => {
-      if (!cell) return "";
-      return cell.f || cell.v || "";
-    })
-  );
-}
-
 function parseCsv(csvText) {
   const rows = [];
   let row = [];
@@ -253,35 +164,12 @@ function parseCsv(csvText) {
   return rows;
 }
 
-async function loadCsvSheet() {
+async function loadSheet() {
   const cacheBust = Date.now();
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}&range=A:D&_=${cacheBust}`;
   const response = await fetch(url, { cache: "reload" });
   if (!response.ok) throw new Error("Não foi possível ler o CSV da planilha.");
   return parseCsv(await response.text());
-}
-
-async function loadGvizSheet() {
-  const cacheBust = Date.now();
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=A:D&_=${cacheBust}`;
-  const response = await fetch(url, { cache: "reload" });
-  if (!response.ok) throw new Error("Não foi possível ler a planilha.");
-  return parseGoogleTable(await response.text());
-}
-
-async function loadSheet() {
-  try {
-    return {
-      rows: await loadCsvSheet(),
-      source: "CSV"
-    };
-  } catch (csvError) {
-    console.warn(csvError);
-    return {
-      rows: await loadGvizSheet(),
-      source: "Google"
-    };
-  }
 }
 
 function filteredEvents() {
@@ -419,13 +307,12 @@ async function syncEvents() {
   }
 
   try {
-    const { rows, source } = await loadSheet();
+    const rows = await loadSheet();
     state.events = rowsToEvents(rows);
     elements.syncStatus.textContent = `Atualizado às ${formatDate(new Date(), { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
   } catch (error) {
-    if (!state.events.length) state.events = rowsToEvents(fallbackRows);
-    elements.syncStatus.textContent = "Usando dados salvos; verifique o acesso da planilha";
-    console.warn(error);
+    elements.syncStatus.textContent = "Não foi possível carregar a planilha";
+    console.error(error);
   } finally {
     state.isSyncing = false;
     if (elements.refreshButton) {
