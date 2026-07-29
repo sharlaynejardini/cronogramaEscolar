@@ -2,59 +2,61 @@ const CONFIG = {
   abaCronograma: '2º SEMESTRE',
   abaProfessores: 'PROFESSORES',
   timezone: 'America/Sao_Paulo',
-  assuntoPrefixo: 'Lembrete do cronograma',
+  diasAntes: 2,
+  assuntoPrefixo: 'Em breve',
   fallbackEmails: []
 };
 
 function criarDisparoDiario() {
   ScriptApp.getProjectTriggers()
-    .filter((trigger) => trigger.getHandlerFunction() === 'enviarLembretesDeAmanha')
+    .filter((trigger) => ['enviarLembretesAntecipados', 'enviarLembretesDeAmanha'].includes(trigger.getHandlerFunction()))
     .forEach((trigger) => ScriptApp.deleteTrigger(trigger));
 
-  ScriptApp.newTrigger('enviarLembretesDeAmanha')
+  ScriptApp.newTrigger('enviarLembretesAntecipados')
     .timeBased()
     .everyDays(1)
     .atHour(7)
     .create();
 }
 
-function enviarLembretesDeAmanha() {
+function enviarLembretesAntecipados() {
   const planilha = SpreadsheetApp.getActiveSpreadsheet();
-  const eventos = eventosDeAmanha(planilha);
-  const emails = emailsDosProfessores(planilha);
+  const eventos = eventosPorAntecedencia(planilha, CONFIG.diasAntes);
+  const professores = professoresParaAviso(planilha);
 
-  if (!eventos.length || !emails.length) return;
+  if (!eventos.length || !professores.length) return;
 
-  const amanha = new Date();
-  amanha.setDate(amanha.getDate() + 1);
-  const dataFormatada = Utilities.formatDate(amanha, CONFIG.timezone, 'dd/MM/yyyy');
-  const assunto = `${CONFIG.assuntoPrefixo} - ${dataFormatada}`;
-  const corpo = montarCorpoEmail(eventos, dataFormatada);
+  const dataEvento = dataComAntecedencia(CONFIG.diasAntes);
+  const dataFormatada = Utilities.formatDate(dataEvento, CONFIG.timezone, 'dd/MM/yyyy');
+  const assunto = `${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`;
 
-  MailApp.sendEmail({
-    to: emails.join(','),
-    subject: assunto,
-    htmlBody: corpo,
-    name: 'Calendário Escolar'
+  professores.forEach((professor) => {
+    MailApp.sendEmail({
+      to: professor.email,
+      subject: assunto,
+      htmlBody: montarCorpoEmail(professor, eventos, dataFormatada),
+      name: 'EMEF DEP. AGENOR LINO DE MATTOS'
+    });
   });
 }
 
-function eventosDeAmanha(planilha) {
+function enviarLembretesDeAmanha() {
+  enviarLembretesAntecipados();
+}
+
+function eventosPorAntecedencia(planilha, diasAntes) {
   const aba = planilha.getSheetByName(CONFIG.abaCronograma);
   if (!aba) throw new Error(`Aba não encontrada: ${CONFIG.abaCronograma}`);
 
   const linhas = aba.getRange(2, 1, Math.max(aba.getLastRow() - 1, 0), 4).getDisplayValues();
-  const amanha = new Date();
-  amanha.setHours(0, 0, 0, 0);
-  amanha.setDate(amanha.getDate() + 1);
-  const chaveAmanha = chaveData(amanha);
+  const chaveAlvo = chaveData(dataComAntecedencia(diasAntes));
 
   return linhas
     .filter((linha) => linha[0] && linha[2])
     .flatMap((linha) => {
       const datas = interpretarDatas(linha[0]);
       return datas
-        .filter((data) => chaveData(data) === chaveAmanha)
+        .filter((data) => chaveData(data) === chaveAlvo)
         .map(() => ({
           dataOriginal: linha[0],
           diaSemana: linha[1],
@@ -64,36 +66,55 @@ function eventosDeAmanha(planilha) {
     });
 }
 
-function emailsDosProfessores(planilha) {
+function professoresParaAviso(planilha) {
   const aba = planilha.getSheetByName(CONFIG.abaProfessores);
-  const emails = [...CONFIG.fallbackEmails];
+  const professores = CONFIG.fallbackEmails.map((email) => ({ nome: '', email }));
 
   if (aba) {
-    const valores = aba.getRange(1, 1, aba.getLastRow(), 1).getDisplayValues().flat();
-    valores.forEach((valor) => {
-      const email = String(valor).trim();
-      if (email && email.includes('@') && !/^e-?mail$/i.test(email)) emails.push(email);
+    const valores = aba.getRange(1, 1, aba.getLastRow(), 2).getDisplayValues();
+    valores.forEach((linha) => {
+      const primeiro = String(linha[0] || '').trim();
+      const segundo = String(linha[1] || '').trim();
+      const email = [primeiro, segundo].find((valor) => valor.includes('@') && !/^e-?mail$/i.test(valor));
+      const nome = email === primeiro ? segundo : primeiro;
+      if (email) professores.push({ nome, email });
     });
   }
 
-  return [...new Set(emails)];
+  return professores.filter((professor, index, lista) =>
+    professor.email && lista.findIndex((item) => item.email === professor.email) === index
+  );
 }
 
-function montarCorpoEmail(eventos, dataFormatada) {
+function montarCorpoEmail(professor, eventos, dataFormatada) {
   const itens = eventos.map((evento) => `
     <li>
-      <strong>${escapar(evento.titulo)}</strong><br>
-      ${escapar(evento.diaSemana || dataFormatada)}
+      <strong>${escapar(dataFormatada)}</strong> - ${escapar(evento.titulo)}
       ${evento.obs ? `<br><span>${escapar(evento.obs)}</span>` : ''}
     </li>
   `).join('');
+  const saudacao = professor.nome ? `Olá, ${escapar(professor.nome)}!` : 'Olá, professor(a)!';
 
   return `
-    <p>Bom dia, professores.</p>
-    <p>Segue lembrete dos eventos previstos para amanhã (${dataFormatada}):</p>
+    <h2>${escapar(`${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`)}</h2>
+    <p>${saudacao}</p>
+    <p>Fique ligado(a)!</p>
     <ul>${itens}</ul>
-    <p>Calendário Escolar</p>
+    <p><strong>Bom trabalho!</strong></p>
+    <p>EMEF DEP. AGENOR LINO DE MATTOS</p>
   `;
+}
+
+function dataComAntecedencia(diasAntes) {
+  const data = new Date();
+  data.setHours(0, 0, 0, 0);
+  data.setDate(data.getDate() + diasAntes);
+  return data;
+}
+
+function tituloAssunto(eventos) {
+  if (eventos.length === 1) return eventos[0].titulo;
+  return `${eventos.length} eventos do cronograma`;
 }
 
 function interpretarDatas(valor) {
