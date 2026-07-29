@@ -21,12 +21,12 @@ function criarDisparoDiario() {
 
 function enviarLembretesAntecipados() {
   const planilha = SpreadsheetApp.getActiveSpreadsheet();
-  const eventos = eventosPorAntecedencia(planilha, CONFIG.diasAntes);
+  const dataEvento = dataComAntecedencia(CONFIG.diasAntes);
+  const eventos = eventosPorData(planilha, dataEvento);
   const professores = professoresParaAviso(planilha);
 
   if (!eventos.length || !professores.length) return;
 
-  const dataEvento = dataComAntecedencia(CONFIG.diasAntes);
   const dataFormatada = Utilities.formatDate(dataEvento, CONFIG.timezone, 'dd/MM/yyyy');
   const assunto = `${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`;
 
@@ -44,12 +44,39 @@ function enviarLembretesDeAmanha() {
   enviarLembretesAntecipados();
 }
 
+function enviarTesteDia27() {
+  const planilha = SpreadsheetApp.getActiveSpreadsheet();
+  const dataEvento = new Date(2026, 6, 27);
+  const eventos = eventosPorData(planilha, dataEvento);
+  const propriedades = PropertiesService.getScriptProperties();
+  const emailTeste = propriedades.getProperty('EMAIL_TESTE_DIA_27');
+  const professor = {
+    nome: propriedades.getProperty('NOME_TESTE_DIA_27') || 'SHARLAYNE',
+    email: emailTeste
+  };
+
+  if (!emailTeste) throw new Error('Configure a propriedade EMAIL_TESTE_DIA_27 antes de executar o teste.');
+  if (!eventos.length) throw new Error('Nenhum evento encontrado em 27/07/2026.');
+
+  const dataFormatada = Utilities.formatDate(dataEvento, CONFIG.timezone, 'dd/MM/yyyy');
+  MailApp.sendEmail({
+    to: professor.email,
+    subject: `${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`,
+    htmlBody: montarCorpoEmail(professor, eventos, dataFormatada),
+    name: 'EMEF DEP. AGENOR LINO DE MATTOS'
+  });
+}
+
 function eventosPorAntecedencia(planilha, diasAntes) {
+  return eventosPorData(planilha, dataComAntecedencia(diasAntes));
+}
+
+function eventosPorData(planilha, dataAlvo) {
   const aba = planilha.getSheetByName(CONFIG.abaCronograma);
   if (!aba) throw new Error(`Aba não encontrada: ${CONFIG.abaCronograma}`);
 
   const linhas = aba.getRange(2, 1, Math.max(aba.getLastRow() - 1, 0), 4).getDisplayValues();
-  const chaveAlvo = chaveData(dataComAntecedencia(diasAntes));
+  const chaveAlvo = chaveData(dataAlvo);
 
   return linhas
     .filter((linha) => linha[0] && linha[2])
