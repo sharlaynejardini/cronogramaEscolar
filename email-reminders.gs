@@ -128,7 +128,7 @@ function eventosPorData(planilha, dataAlvo) {
       const datas = interpretarDatas(linha[0]);
       return datas
         .filter((data) => chaveData(data) === chaveAlvo)
-        .map(() => ({
+        .map((data) => ({
           data,
           dataOriginal: linha[0],
           diaSemana: linha[1],
