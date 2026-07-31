@@ -10,4 +10,4 @@ Para enviar e-mail 3 dias antes dos eventos, use o arquivo `email-reminders.gs` 
 6. Abra o Apps Script logada na conta `sharlayne.fonseca@professor.barueri.br`, ou configure esse e-mail como alias autorizado no Gmail da conta que executa o script.
 7. No Apps Script, execute a função `instalarEnvioAutomatico()` uma vez e autorize.
 
-Depois disso, a função `enviarLembretesAntecipados()` roda todos os dias às 7h e envia um alerta individual quando houver evento daqui a 3 dias. O e-mail usa o nome do professor e o nome do evento.
+Depois disso, a função `enviarLembretesAntecipados()` roda automaticamente todos os dias por volta das 7h da manhã, no fuso de São Paulo, e envia um alerta individual quando houver evento daqui a 3 dias. O e-mail usa o nome do professor e o nome do evento.
