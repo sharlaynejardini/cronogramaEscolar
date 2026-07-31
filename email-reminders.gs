@@ -21,7 +21,7 @@ function criarDisparoDiario() {
   ScriptApp.newTrigger('enviarLembretesAntecipados')
     .timeBased()
     .everyDays(1)
-    .atHour(7)
+    .atHour(8)
     .nearMinute(0)
     .inTimezone(CONFIG.timezone)
     .create();
