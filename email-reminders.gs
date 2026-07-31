@@ -129,6 +129,7 @@ function eventosPorData(planilha, dataAlvo) {
       return datas
         .filter((data) => chaveData(data) === chaveAlvo)
         .map(() => ({
+          data,
           dataOriginal: linha[0],
           diaSemana: linha[1],
           titulo: linha[2],
@@ -161,7 +162,7 @@ function professoresParaAviso(planilha) {
 function montarCorpoEmail(professor, eventos, dataFormatada) {
   const itens = eventos.map((evento) => `
     <li>
-      <strong>${escapar(dataFormatada)}</strong> - ${escapar(evento.titulo)}
+      <strong>${escapar(dataFormatada)} (${escapar(diaSemanaPorExtenso(evento.data))})</strong> - ${escapar(evento.titulo)}
       ${evento.obs ? `<br><span>${escapar(evento.obs)}</span>` : ''}
     </li>
   `).join('');
@@ -234,6 +235,18 @@ function intervalo(inicio, fim) {
 
 function chaveData(data) {
   return Utilities.formatDate(data, CONFIG.timezone, 'yyyy-MM-dd');
+}
+
+function diaSemanaPorExtenso(data) {
+  return [
+    'domingo',
+    'segunda-feira',
+    'terça-feira',
+    'quarta-feira',
+    'quinta-feira',
+    'sexta-feira',
+    'sábado'
+  ][data.getDay()];
 }
 
 function escapar(valor) {
