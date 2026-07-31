@@ -4,8 +4,14 @@ const CONFIG = {
   timezone: 'America/Sao_Paulo',
   diasAntes: 3,
   assuntoPrefixo: 'Em breve',
+  emailRemetente: 'sharlayne.fonseca@professor.barueri.br',
+  nomeRemetente: 'EMEF DEP. AGENOR LINO DE MATTOS',
   fallbackEmails: []
 };
+
+function instalarEnvioAutomatico() {
+  criarDisparoDiario();
+}
 
 function criarDisparoDiario() {
   ScriptApp.getProjectTriggers()
@@ -25,17 +31,23 @@ function enviarLembretesAntecipados() {
   const eventos = eventosPorData(planilha, dataEvento);
   const professores = professoresParaAviso(planilha);
 
-  if (!eventos.length || !professores.length) return;
+  if (!eventos.length) {
+    console.log(`Nenhum evento encontrado para ${chaveData(dataEvento)}.`);
+    return;
+  }
+
+  if (!professores.length) {
+    throw new Error(`Nenhum e-mail encontrado na aba ${CONFIG.abaProfessores}.`);
+  }
 
   const dataFormatada = Utilities.formatDate(dataEvento, CONFIG.timezone, 'dd/MM/yyyy');
   const assunto = `${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`;
 
   professores.forEach((professor) => {
-    MailApp.sendEmail({
-      to: professor.email,
-      subject: assunto,
-      htmlBody: montarCorpoEmail(professor, eventos, dataFormatada),
-      name: 'EMEF DEP. AGENOR LINO DE MATTOS'
+    enviarEmail({
+      destinatario: professor.email,
+      assunto,
+      html: montarCorpoEmail(professor, eventos, dataFormatada)
     });
   });
 }
@@ -59,12 +71,42 @@ function enviarTesteDia27() {
   if (!eventos.length) throw new Error('Nenhum evento encontrado em 27/07/2026.');
 
   const dataFormatada = Utilities.formatDate(dataEvento, CONFIG.timezone, 'dd/MM/yyyy');
-  MailApp.sendEmail({
-    to: professor.email,
-    subject: `${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`,
-    htmlBody: montarCorpoEmail(professor, eventos, dataFormatada),
-    name: 'EMEF DEP. AGENOR LINO DE MATTOS'
+  enviarEmail({
+    destinatario: professor.email,
+    assunto: `${CONFIG.assuntoPrefixo}: ${tituloAssunto(eventos)}.`,
+    html: montarCorpoEmail(professor, eventos, dataFormatada)
   });
+}
+
+function enviarEmail({ destinatario, assunto, html }) {
+  const opcoes = {
+    htmlBody: html,
+    name: CONFIG.nomeRemetente
+  };
+  configurarRemetente(opcoes);
+
+  GmailApp.sendEmail(destinatario, assunto, textoSimples(html), opcoes);
+  console.log(`E-mail enviado para ${destinatario}.`);
+}
+
+function configurarRemetente(opcoes) {
+  const usuarioAtual = Session.getActiveUser().getEmail();
+  const usuarioEfetivo = Session.getEffectiveUser().getEmail();
+  const aliases = GmailApp.getAliases();
+  const remetente = CONFIG.emailRemetente.toLowerCase();
+
+  if (aliases.map((email) => email.toLowerCase()).includes(remetente)) {
+    opcoes.from = CONFIG.emailRemetente;
+    return;
+  }
+
+  if (usuarioAtual && usuarioAtual.toLowerCase() === remetente) return;
+  if (usuarioEfetivo && usuarioEfetivo.toLowerCase() === remetente) return;
+
+  throw new Error(
+    `Para enviar como ${CONFIG.emailRemetente}, abra este Apps Script logada nessa conta ` +
+    'ou configure esse endereço como alias autorizado no Gmail.'
+  );
 }
 
 function eventosPorAntecedencia(planilha, diasAntes) {
@@ -98,6 +140,7 @@ function professoresParaAviso(planilha) {
   const professores = CONFIG.fallbackEmails.map((email) => ({ nome: '', email }));
 
   if (aba) {
+    if (aba.getLastRow() < 1) return professores;
     const valores = aba.getRange(1, 1, aba.getLastRow(), 2).getDisplayValues();
     valores.forEach((linha) => {
       const primeiro = String(linha[0] || '').trim();
@@ -198,4 +241,19 @@ function escapar(valor) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+function textoSimples(html) {
+  return String(html || '')
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<\/p>/gi, '\n')
+    .replace(/<\/li>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
