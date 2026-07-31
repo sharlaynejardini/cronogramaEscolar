@@ -22,7 +22,7 @@ function criarDisparoDiario() {
     .timeBased()
     .everyDays(1)
     .atHour(8)
-    .nearMinute(0)
+    .nearMinute(30)
     .inTimezone(CONFIG.timezone)
     .create();
 }
