@@ -2,7 +2,7 @@ const CONFIG = {
   abaCronograma: '2º SEMESTRE',
   abaProfessores: 'PROFESSORES',
   timezone: 'America/Sao_Paulo',
-  diasAntes: 2,
+  diasAntes: 3,
   assuntoPrefixo: 'Em breve',
   fallbackEmails: []
 };

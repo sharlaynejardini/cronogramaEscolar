@@ -1,6 +1,6 @@
 # Lembretes por e-mail
 
-Para enviar e-mail 2 dias antes dos eventos, use o arquivo `email-reminders.gs` no Google Apps Script da planilha.
+Para enviar e-mail 3 dias antes dos eventos, use o arquivo `email-reminders.gs` no Google Apps Script da planilha.
 
 1. Abra a planilha.
 2. Vá em `Extensões` > `Apps Script`.
@@ -9,4 +9,4 @@ Para enviar e-mail 2 dias antes dos eventos, use o arquivo `email-reminders.gs` 
 5. Crie a lista de professores com nome e e-mail. Pode ser `Nome` na coluna `A` e `E-mail` na coluna `B`, ou o contrário.
 6. No Apps Script, execute a função `criarDisparoDiario()` uma vez e autorize.
 
-Depois disso, a função `enviarLembretesAntecipados()` roda todos os dias às 7h e envia um alerta individual quando houver evento daqui a 2 dias. O e-mail usa o nome do professor e o nome do evento.
+Depois disso, a função `enviarLembretesAntecipados()` roda todos os dias às 7h e envia um alerta individual quando houver evento daqui a 3 dias. O e-mail usa o nome do professor e o nome do evento.
